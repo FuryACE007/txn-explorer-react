@@ -43,8 +43,8 @@ function App() {
         Header: 'Value (ETH)',
         accessor: 'value',
         Cell: ({ value }) => {
-          console.log('Value before formatEther:', value);
-          return value ? utils.formatEther(value) : 'N/A';
+          // Check if value is a number before formatting
+          return !isNaN(parseFloat(value)) && isFinite(value) ? utils.formatEther(value) : 'N/A';
         },
       },
       {
