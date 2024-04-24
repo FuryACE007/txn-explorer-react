@@ -11,12 +11,15 @@ function App() {
   const [pageCount, setPageCount] = useState(0);
 
   const connectWalletHandler = async () => {
+    console.log('Attempting to connect to MetaMask...');
     if (window.ethereum) {
       try {
+        console.log('Before account state is set:', account);
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
+        console.log('After account state is set:', accounts[0]);
       } catch (err) {
-        console.error(err);
+        console.error('Error connecting to MetaMask:', err);
       }
     } else {
       alert('Please install MetaMask!');
@@ -75,9 +78,14 @@ function App() {
       if (account) {
         setLoading(true);
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
-        const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
-        setTransactions(response.data.result);
-        setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
+        try {
+          const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
+          console.log('API Response:', response); // Log the entire response
+          setTransactions(response.data.result);
+          setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
+        } catch (error) {
+          console.error('API Error:', error); // Log any errors that occur during the API call
+        }
         setLoading(false);
       }
     };
