@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   // For testing purposes, we're setting a default account address
-  const [account, setAccount] = useState('0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
+  const [account, setAccount] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(0);
