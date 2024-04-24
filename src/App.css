@@ -4,14 +4,14 @@
 }
 
 .App-header {
-  background-color: #20232a;
+  background: linear-gradient(135deg, rgba(145,234,228,0.1) 0%, rgba(47,48,71,0.7) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #61dafb;
+  color: white;
 }
 
 .App-link {
@@ -30,7 +30,7 @@ table {
 }
 
 thead tr {
-  background-color: #009879;
+  background-color: #0070f3;
   color: #ffffff;
   text-align: left;
 }
@@ -48,7 +48,7 @@ tbody tr:nth-of-type(even) {
 }
 
 tbody tr:last-of-type {
-  border-bottom: 2px solid #009879;
+  border-bottom: 2px solid #0070f3;
 }
 
 /* Pagination styles */
@@ -60,9 +60,9 @@ tbody tr:last-of-type {
 }
 
 .pagination button {
-  color: #009879;
+  color: #0070f3;
   background-color: #ffffff;
-  border: 1px solid #009879;
+  border: 1px solid #0070f3;
   margin: 0 5px;
   padding: 10px 15px;
   border-radius: 5px;
@@ -71,7 +71,7 @@ tbody tr:last-of-type {
 }
 
 .pagination button:hover {
-  background-color: #009879;
+  background-color: #0070f3;
   color: #ffffff;
 }
 

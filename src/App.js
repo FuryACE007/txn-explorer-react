@@ -146,11 +146,9 @@ function App() {
                         setPageSize(Number(e.target.value));
                       }}
                     >
-                      {[8, 16, 24, 32, 40].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                          Show {pageSize}
-                        </option>
-                      ))}
+                      <option key={8} value={8}>
+                        Show 8
+                      </option>
                     </select>
                   </div>
                 </>
