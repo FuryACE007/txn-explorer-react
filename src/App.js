@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTable, usePagination } from 'react-table';
 import './App.css';
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 const { utils } = ethers;
 
 function App() {
