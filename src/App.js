@@ -61,8 +61,6 @@ function App() {
     canNextPage,
     pageOptions,
     gotoPage,
-    nextPage,
-    previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
   } = useTable(
@@ -92,8 +90,10 @@ function App() {
   }, [account]);
 
   useEffect(() => {
-    gotoPage(pageIndex);
-  }, [pageIndex, gotoPage]);
+  console.log('Before gotoPage call, pageIndex:', pageIndex);
+  gotoPage(pageIndex);
+  console.log('After gotoPage call, pageIndex:', pageIndex);
+}, [pageIndex, gotoPage, transactions]);
 
   return (
     <div className="App">
@@ -131,10 +131,10 @@ function App() {
                     </tbody>
                   </table>
                   <div className="pagination">
-                    <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    <button onClick={() => { const newPageIndex = pageIndex - 1; gotoPage(newPageIndex); }} disabled={!canPreviousPage}>
                       {'<'}
                     </button>{' '}
-                    <button onClick={() => nextPage()} disabled={!canNextPage}>
+                    <button onClick={() => { const newPageIndex = pageIndex + 1; gotoPage(newPageIndex); }} disabled={!canNextPage}>
                       {'>'}
                     </button>
                     <span>
