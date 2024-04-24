@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   // For testing purposes, we're setting a default account address
-  const [account, setAccount] = useState(null);
+  const [account, setAccount] = useState('0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(0);
@@ -26,8 +26,8 @@ function App() {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Hash',
-        accessor: 'hash',
+        Header: 'Transaction Address',
+        accessor: 'hash', // Assuming 'hash' is the transaction address
       },
       {
         Header: 'From',
@@ -38,12 +38,8 @@ function App() {
         accessor: 'to',
       },
       {
-        Header: 'Value',
-        accessor: 'value',
-      },
-      {
-        Header: 'Nonce',
-        accessor: 'nonce',
+        Header: 'Time Stamp',
+        accessor: 'timeStamp',
       },
     ],
     []
@@ -67,7 +63,7 @@ function App() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, pageSize: 8 }, // Set initial pageSize to 8
       manualPagination: true,
       pageCount: pageCount,
     },
@@ -81,7 +77,7 @@ function App() {
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
         const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
         setTransactions(response.data.result);
-        setPageCount(Math.ceil(response.data.result.length / 10));
+        setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
         setLoading(false);
       }
     };
@@ -149,11 +145,13 @@ function App() {
                         setPageSize(Number(e.target.value));
                       }}
                     >
-                      {[10, 20, 30, 40, 50].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                          Show {pageSize}
-                        </option>
-                      ))}
+                      {
+                        [8].map(pageSize => (
+                          <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                          </option>
+                        ))
+                      }
                     </select>
                   </div>
                 </>
