@@ -43,6 +43,7 @@ function App() {
         Header: 'Value (ETH)',
         accessor: 'value',
         Cell: ({ value }) => {
+          console.log(utils); // Log the utils object to inspect its properties
           // Check if value is a number before formatting
           return !isNaN(parseFloat(value)) && isFinite(value) ? utils.formatEther(value) : 'N/A';
         },
