@@ -11,6 +11,7 @@ function App() {
   const [pageCount, setPageCount] = useState(0);
 
   const connectWalletHandler = async () => {
+    console.log('window.ethereum object:', window.ethereum);
     console.log('Attempting to connect to MetaMask...');
     if (window.ethereum) {
       try {
