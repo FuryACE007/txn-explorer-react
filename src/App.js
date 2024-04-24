@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTable, usePagination } from 'react-table';
 import './App.css';
-import { ethers } from 'ethers';
-const { utils } = ethers;
+import { formatEther } from 'ethers';
 
 function App() {
   // For testing purposes, we're setting a default account address
@@ -43,9 +42,8 @@ function App() {
         Header: 'Value (ETH)',
         accessor: 'value',
         Cell: ({ value }) => {
-          console.log(utils); // Log the utils object to inspect its properties
           // Check if value is a number before formatting
-          return !isNaN(parseFloat(value)) && isFinite(value) ? utils.formatEther(value) : 'N/A';
+          return !isNaN(parseFloat(value)) && isFinite(value) ? formatEther(value) : 'N/A';
         },
       },
       {
