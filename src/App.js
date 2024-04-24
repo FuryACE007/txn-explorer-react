@@ -81,6 +81,7 @@ function App() {
         try {
           const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
           console.log('API Response:', response); // Log the entire response
+          console.log('Fetched transactions:', response.data.result); // Log the fetched transactions
           setTransactions(response.data.result);
           setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
         } catch (error) {
@@ -124,6 +125,8 @@ function App() {
                     <tbody {...getTableBodyProps()}>
                       {page.map((row, i) => {
                         prepareRow(row);
+                        console.log('Transactions state:', transactions); // Log the transactions state
+                        console.log('Page array:', page); // Log the current page array
                         return (
                           <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
