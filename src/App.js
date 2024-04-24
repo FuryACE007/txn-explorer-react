@@ -84,6 +84,7 @@ function App() {
         setLoading(true);
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
         const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
+        console.log(response.data.result);
         setTransactions(response.data.result);
         setPageCount(Math.ceil(response.data.result.length / 8));
         setLoading(false);
@@ -173,4 +174,3 @@ function App() {
 }
 
 export default App;
-console.log(response.data.result);
