@@ -98,10 +98,14 @@ function App() {
   }, [account]);
 
   useEffect(() => {
-  console.log('Before gotoPage call, pageIndex:', pageIndex);
-  gotoPage(pageIndex);
-  console.log('After gotoPage call, pageIndex:', pageIndex);
-}, [pageIndex, gotoPage, transactions]);
+    console.log('Before gotoPage call, pageIndex:', pageIndex);
+    gotoPage(pageIndex);
+    console.log('After gotoPage call, pageIndex:', pageIndex);
+  }, [pageIndex, gotoPage, transactions]);
+
+  useEffect(() => {
+    // Removed simulateMetaMaskConnection invocation to allow manual wallet connection
+  }, []);
 
   return (
     <div className="App">
