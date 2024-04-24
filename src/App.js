@@ -5,18 +5,21 @@ import './App.css';
 
 function App() {
   // For testing purposes, we're setting a default account address
-  const [account, setAccount] = useState('0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
+  const [account, setAccount] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(0);
 
   const connectWalletHandler = async () => {
+    console.log('Attempting to connect to MetaMask...');
     if (window.ethereum) {
       try {
+        console.log('Before account state is set:', account);
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
+        console.log('After account state is set:', accounts[0]);
       } catch (err) {
-        console.error(err);
+        console.error('Error connecting to MetaMask:', err);
       }
     } else {
       alert('Please install MetaMask!');
@@ -26,8 +29,8 @@ function App() {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Hash',
-        accessor: 'hash',
+        Header: 'Transaction Address',
+        accessor: 'hash', // Assuming 'hash' is the transaction address
       },
       {
         Header: 'From',
@@ -38,12 +41,8 @@ function App() {
         accessor: 'to',
       },
       {
-        Header: 'Value',
-        accessor: 'value',
-      },
-      {
-        Header: 'Nonce',
-        accessor: 'nonce',
+        Header: 'Time Stamp',
+        accessor: 'timeStamp',
       },
     ],
     []
@@ -67,7 +66,7 @@ function App() {
     {
       columns,
       data,
-      initialState: { pageIndex: 0 },
+      initialState: { pageIndex: 0, pageSize: 8 }, // Set initial pageSize to 8
       manualPagination: true,
       pageCount: pageCount,
     },
@@ -79,9 +78,14 @@ function App() {
       if (account) {
         setLoading(true);
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
-        const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
-        setTransactions(response.data.result);
-        setPageCount(Math.ceil(response.data.result.length / 10));
+        try {
+          const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
+          console.log('API Response:', response); // Log the entire response
+          setTransactions(response.data.result);
+          setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
+        } catch (error) {
+          console.error('API Error:', error); // Log any errors that occur during the API call
+        }
         setLoading(false);
       }
     };
@@ -131,10 +135,10 @@ function App() {
                     </tbody>
                   </table>
                   <div className="pagination">
-                    <button onClick={() => { const newPageIndex = pageIndex - 1; gotoPage(newPageIndex); }} disabled={!canPreviousPage}>
+                    <button onClick={() => gotoPage(oldPageIndex => Math.max(oldPageIndex - 1, 0))} disabled={!canPreviousPage}>
                       {'<'}
                     </button>{' '}
-                    <button onClick={() => { const newPageIndex = pageIndex + 1; gotoPage(newPageIndex); }} disabled={!canNextPage}>
+                    <button onClick={() => gotoPage(oldPageIndex => Math.min(oldPageIndex + 1, pageOptions.length - 1))} disabled={!canNextPage}>
                       {'>'}
                     </button>
                     <span>
@@ -149,11 +153,13 @@ function App() {
                         setPageSize(Number(e.target.value));
                       }}
                     >
-                      {[10, 20, 30, 40, 50].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                          Show {pageSize}
-                        </option>
-                      ))}
+                      {
+                        [8].map(pageSize => (
+                          <option key={pageSize} value={pageSize}>
+                            Show {pageSize}
+                          </option>
+                        ))
+                      }
                     </select>
                   </div>
                 </>
