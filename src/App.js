@@ -42,7 +42,10 @@ function App() {
       {
         Header: 'Value (ETH)',
         accessor: 'value',
-        Cell: ({ value }) => value ? utils.formatEther(value) : 'N/A',
+        Cell: ({ value }) => {
+          console.log('Value before formatEther:', value);
+          return value ? utils.formatEther(value) : 'N/A';
+        },
       },
       {
         Header: 'Timestamp',
