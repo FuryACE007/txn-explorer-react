@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ethers } from 'ethers';
 import { useTable, usePagination } from 'react-table';
 import './App.css';
+import ethers from 'ethers';
+const { utils } = ethers;
 
 function App() {
   // For testing purposes, we're setting a default account address
@@ -41,7 +42,7 @@ function App() {
       {
         Header: 'Value (ETH)',
         accessor: 'value',
-        Cell: ({ value }) => ethers.utils.formatEther(value),
+        Cell: ({ value }) => utils.formatEther(value),
       },
       {
         Header: 'Timestamp',
