@@ -41,10 +41,7 @@ function App() {
         Header: 'Value',
         accessor: 'value',
       },
-      {
-        Header: 'Nonce',
-        accessor: 'nonce',
-      },
+      // Removed Nonce column
     ],
     []
   );
@@ -81,7 +78,7 @@ function App() {
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
         const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
         setTransactions(response.data.result);
-        setPageCount(Math.ceil(response.data.result.length / 10));
+        setPageCount(Math.ceil(response.data.result.length / 8));
         setLoading(false);
       }
     };
@@ -149,7 +146,7 @@ function App() {
                         setPageSize(Number(e.target.value));
                       }}
                     >
-                      {[10, 20, 30, 40, 50].map(pageSize => (
+                      {[8, 16, 24, 32, 40].map(pageSize => (
                         <option key={pageSize} value={pageSize}>
                           Show {pageSize}
                         </option>
