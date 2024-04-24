@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ethers } from 'ethers';
 import { useTable, usePagination } from 'react-table';
 import './App.css';
 
@@ -38,10 +39,15 @@ function App() {
         accessor: 'to',
       },
       {
-        Header: 'Value',
+        Header: 'Value (ETH)',
         accessor: 'value',
+        Cell: ({ value }) => ethers.utils.formatEther(value),
       },
-      // Removed Nonce column
+      {
+        Header: 'Timestamp',
+        accessor: 'timeStamp',
+        Cell: ({ value }) => new Date(value * 1000).toLocaleString(),
+      },
     ],
     []
   );
