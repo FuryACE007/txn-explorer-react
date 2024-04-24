@@ -75,6 +75,7 @@ function App() {
 
   useEffect(() => {
     const fetchTransactions = async () => {
+      console.log('fetchTransactions function called with account:', account);
       if (account) {
         setLoading(true);
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
@@ -83,6 +84,7 @@ function App() {
           console.log('API Response:', response); // Log the entire response
           console.log('Fetched transactions:', response.data.result); // Log the fetched transactions
           setTransactions(response.data.result);
+          console.log('Transactions state updated:', response.data.result);
           setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
         } catch (error) {
           console.error('API Error:', error); // Log any errors that occur during the API call
@@ -127,6 +129,7 @@ function App() {
                         prepareRow(row);
                         console.log('Transactions state:', transactions); // Log the transactions state
                         console.log('Page array:', page); // Log the current page array
+                        console.log('Rendering transaction table with transactions:', transactions);
                         return (
                           <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
