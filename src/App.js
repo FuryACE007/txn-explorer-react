@@ -4,8 +4,8 @@ import './App.css';
 import { formatEther } from 'ethers';
 
 function App() {
-  const [account, setAccount] = useState(null);
-  const [transactions, setTransactions] = useState([
+  const [account, setAccount] = useState('0xMockAccount');
+  const [transactions] = useState([
     { hash: '0xMockTransactionHash1', from: '0xMockFromAddress1', to: '0xMockToAddress1', value: '1000000000000000000', timeStamp: '1601510400' },
     { hash: '0xMockTransactionHash2', from: '0xMockFromAddress2', to: '0xMockToAddress2', value: '2000000000000000000', timeStamp: '1601596800' },
     // ... more mock transactions
@@ -57,7 +57,8 @@ function App() {
 
   const data = React.useMemo(() => transactions, [transactions]);
 
-  const [pageCount, setPageCount] = useState(0);
+  const pageSize = 8;
+  const pageCount = Math.ceil(transactions.length / pageSize);
 
   const {
     getTableProps,
@@ -70,7 +71,7 @@ function App() {
     pageOptions,
     gotoPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex },
   } = useTable(
     {
       columns,
@@ -81,17 +82,6 @@ function App() {
     },
     usePagination
   );
-
-  useEffect(() => {
-    setPageCount(Math.ceil(transactions.length / pageSize));
-    console.log('Page count:', pageCount);
-  }, [transactions, pageSize, pageCount]);
-
-  useEffect(() => {
-    // Bypass the fetching logic and use hardcoded transactions
-    setTransactions(transactions);
-    console.log('Transactions state:', transactions);
-  }, [transactions]);
 
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
