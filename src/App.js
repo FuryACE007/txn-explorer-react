@@ -5,8 +5,7 @@ import './App.css';
 import { formatEther } from 'ethers';
 
 function App() {
-  // For testing purposes, we're setting a default account address
-  const [account, setAccount] = useState('0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe');
+  const [account, setAccount] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pageCount, setPageCount] = useState(0);
@@ -26,6 +25,10 @@ function App() {
 
   const columns = React.useMemo(
     () => [
+      {
+        Header: 'Transaction Address',
+        accessor: 'hash', // assuming 'hash' is the property name for the transaction address
+      },
       {
         Header: 'Hash',
         accessor: 'hash',
@@ -87,14 +90,19 @@ function App() {
         const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
         const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
         console.log(response.data.result);
-        setTransactions(response.data.result);
-        setPageCount(Math.ceil(response.data.result.length / 8));
+        // Calculate the total number of pages
+        const totalTransactions = response.data.result.length;
+        setPageCount(Math.ceil(totalTransactions / pageSize));
+        // Calculate the slice of transactions to display on the current page
+        const startIndex = pageIndex * pageSize;
+        const endIndex = startIndex + pageSize;
+        setTransactions(response.data.result.slice(startIndex, endIndex));
         setLoading(false);
       }
     };
 
     fetchTransactions();
-  }, [account]);
+  }, [account, pageIndex, pageSize]);
 
   useEffect(() => {
   console.log('Before gotoPage call, pageIndex:', pageIndex);
