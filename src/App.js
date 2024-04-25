@@ -4,26 +4,11 @@ import './App.css';
 import { formatEther } from 'ethers';
 
 function App() {
-  const [account, setAccount] = useState('0xMockAccount');
+  const [account, setAccount] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [pageIndex, setPageIndex] = useState(0);
 
-  const connectWalletHandler = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setAccount(accounts[0]);
-        const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${accounts[0]}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`);
-        const data = await response.json();
-        if (data.status && data.result) {
-          setTransactions(data.result);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      alert('Please install MetaMask!');
-    }
-  };
+  const pageSize = 8;
 
   const columns = React.useMemo(
     () => [
@@ -56,8 +41,6 @@ function App() {
     []
   );
 
-  const pageSize = 8;
-
   const {
     getTableProps,
     getTableBodyProps,
@@ -69,17 +52,34 @@ function App() {
     pageOptions,
     gotoPage,
     setPageSize,
-    state: { pageIndex },
   } = useTable(
     {
       columns,
-      data,
-      initialState: { pageIndex: 0 },
+      data: transactions.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize),
+      initialState: { pageIndex },
       manualPagination: true,
       pageCount: Math.ceil(transactions.length / pageSize),
     },
     usePagination
   );
+
+  const connectWalletHandler = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        setAccount(accounts[0]);
+        const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${accounts[0]}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`);
+        const data = await response.json();
+        if (data.status && data.result) {
+          setTransactions(data.result);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      alert('Please install MetaMask!');
+    }
+  };
 
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
@@ -87,12 +87,6 @@ function App() {
     console.log('After gotoPage call, pageIndex:', pageIndex);
     console.log('Page index:', pageIndex, 'Page size:', pageSize);
   }, [pageIndex, gotoPage, transactions, pageSize]);
-
-  const data = React.useMemo(() => {
-    const indexOfLastTxn = (pageIndex + 1) * pageSize;
-    const indexOfFirstTxn = indexOfLastTxn - pageSize;
-    return transactions.slice(indexOfFirstTxn, indexOfLastTxn);
-  }, [pageIndex, transactions, pageSize]);
 
   return (
     <div className="App">
@@ -129,10 +123,10 @@ function App() {
                     </tbody>
                   </table>
                   <div className="pagination">
-                    <button onClick={() => gotoPage(prevPageIndex => prevPageIndex - 1)} disabled={!canPreviousPage}>
+                    <button onClick={() => setPageIndex(prevPageIndex => Math.max(prevPageIndex - 1, 0))} disabled={!canPreviousPage}>
                       {'<'}
                     </button>{' '}
-                    <button onClick={() => gotoPage(prevPageIndex => prevPageIndex + 1)} disabled={!canNextPage}>
+                    <button onClick={() => setPageIndex(prevPageIndex => prevPageIndex + 1)} disabled={!canNextPage}>
                       {'>'}
                     </button>
                     <span>
