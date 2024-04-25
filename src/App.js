@@ -30,10 +30,6 @@ function App() {
         accessor: 'hash', // assuming 'hash' is the property name for the transaction address
       },
       {
-        Header: 'Hash',
-        accessor: 'hash',
-      },
-      {
         Header: 'From',
         accessor: 'from',
       },
