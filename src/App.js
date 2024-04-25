@@ -146,10 +146,10 @@ function App() {
                     </tbody>
                   </table>
                   <div className="pagination">
-                    <button onClick={() => { const newPageIndex = pageIndex - 1; gotoPage(newPageIndex); }} disabled={!canPreviousPage}>
+                    <button onClick={() => gotoPage(prevPageIndex => prevPageIndex - 1)} disabled={!canPreviousPage}>
                       {'<'}
                     </button>{' '}
-                    <button onClick={() => { const newPageIndex = pageIndex + 1; gotoPage(newPageIndex); }} disabled={!canNextPage}>
+                    <button onClick={() => gotoPage(prevPageIndex => prevPageIndex + 1)} disabled={!canNextPage}>
                       {'>'}
                     </button>
                     <span>
