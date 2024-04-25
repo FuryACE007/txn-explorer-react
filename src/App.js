@@ -4,7 +4,7 @@ import './App.css';
 import { formatEther } from 'ethers';
 
 function App() {
-  const [account, setAccount] = useState('0xMockAccountAddress');
+  const [account, setAccount] = useState(null);
   const [transactions, setTransactions] = useState([
     { hash: '0xMockTransactionHash1', from: '0xMockFromAddress1', to: '0xMockToAddress1', value: '1000000000000000000', timeStamp: '1601510400' },
     { hash: '0xMockTransactionHash2', from: '0xMockFromAddress2', to: '0xMockToAddress2', value: '2000000000000000000', timeStamp: '1601596800' },
