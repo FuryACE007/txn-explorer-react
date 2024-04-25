@@ -79,14 +79,20 @@ function App() {
       console.log('fetchTransactions function called with account:', account);
       if (account) {
         setLoading(true);
-        const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
+        const apiKey = process.env.REACT_APP_ALCHEMY_API_KEY;
         try {
-          const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
+          const response = await axios.get(`https://eth-sepolia.alchemyapi.io/v2/getTransactionHistory`, {
+            params: {
+              apikey: apiKey,
+              address: account
+            }
+          });
           console.log('API Response:', response); // Log the entire response
-          console.log('Fetched transactions:', response.data.result); // Log the fetched transactions
-          setTransactions(response.data.result);
-          console.log('Transactions state updated:', response.data.result);
-          setPageCount(Math.ceil(response.data.result.length / 8)); // Set to 8 transactions per page
+          // Assuming the response structure is { transactions: [...] }
+          console.log('Fetched transactions:', response.data.transactions); // Log the fetched transactions
+          setTransactions(response.data.transactions);
+          console.log('Transactions state updated:', response.data.transactions);
+          setPageCount(Math.ceil(response.data.transactions.length / 8)); // Set to 8 transactions per page
         } catch (error) {
           console.error('API Error:', error); // Log any errors that occur during the API call
         }
@@ -94,8 +100,10 @@ function App() {
       }
     };
 
-    fetchTransactions();
-  }, [account]);
+    if (account) {
+      fetchTransactions();
+    }
+  }, [account]); // account is the only dependency now
 
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
