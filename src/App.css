@@ -4,7 +4,7 @@
 }
 
 .App-header {
-  background: linear-gradient(135deg, rgba(145,234,228,0.1) 0%, rgba(47,48,71,0.7) 100%);
+  background: linear-gradient(135deg, #64ffda 0%, #1e293b 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -30,8 +30,8 @@ table {
 }
 
 thead tr {
-  background-color: #0070f3;
-  color: #ffffff;
+  background-color: #64ffda;
+  color: #1e293b;
   text-align: left;
 }
 
@@ -48,7 +48,7 @@ tbody tr:nth-of-type(even) {
 }
 
 tbody tr:last-of-type {
-  border-bottom: 2px solid #0070f3;
+  border-bottom: 2px solid #64ffda;
 }
 
 /* Pagination styles */
@@ -60,9 +60,9 @@ tbody tr:last-of-type {
 }
 
 .pagination button {
-  color: #0070f3;
-  background-color: #ffffff;
-  border: 1px solid #0070f3;
+  color: #1e293b;
+  background-color: #64ffda;
+  border: 1px solid #1e293b;
   margin: 0 5px;
   padding: 10px 15px;
   border-radius: 5px;
@@ -71,8 +71,8 @@ tbody tr:last-of-type {
 }
 
 .pagination button:hover {
-  background-color: #0070f3;
-  color: #ffffff;
+  background-color: #1e293b;
+  color: #64ffda;
 }
 
 .pagination select {
