@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useTable, usePagination } from 'react-table';
 import './App.css';
 import { formatEther } from 'ethers';
 
 function App() {
-  const [account, setAccount] = useState('');
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
+  const [account, setAccount] = useState('0xMockAccountAddress');
+  const [transactions, setTransactions] = useState([
+    { hash: '0xMockTransactionHash1', from: '0xMockFromAddress1', to: '0xMockToAddress1', value: '1000000000000000000', timeStamp: '1601510400' },
+    { hash: '0xMockTransactionHash2', from: '0xMockFromAddress2', to: '0xMockToAddress2', value: '2000000000000000000', timeStamp: '1601596800' },
+    // ... more mock transactions
+  ]);
 
   const connectWalletHandler = async () => {
     if (window.ethereum) {
@@ -56,6 +57,8 @@ function App() {
 
   const data = React.useMemo(() => transactions, [transactions]);
 
+  const [pageCount, setPageCount] = useState(0);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -80,31 +83,19 @@ function App() {
   );
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      if (account) {
-        setLoading(true);
-        const apiKey = process.env.REACT_APP_ETHERSCAN_API_KEY;
-        const response = await axios.get(`https://api.etherscan.io/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&sort=asc&apikey=${apiKey}`);
-        console.log(response.data.result);
-        // Calculate the total number of pages
-        const totalTransactions = response.data.result.length;
-        setPageCount(Math.ceil(totalTransactions / pageSize));
-        // Calculate the slice of transactions to display on the current page
-        const startIndex = pageIndex * pageSize;
-        const endIndex = startIndex + pageSize;
-        setTransactions(response.data.result.slice(startIndex, endIndex));
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, [account, pageIndex, pageSize]);
+    setPageCount(Math.ceil(transactions.length / pageSize));
+  }, [transactions, pageSize]);
 
   useEffect(() => {
-  console.log('Before gotoPage call, pageIndex:', pageIndex);
-  gotoPage(pageIndex);
-  console.log('After gotoPage call, pageIndex:', pageIndex);
-}, [pageIndex, gotoPage, transactions]);
+    // Bypass the fetching logic and use hardcoded transactions
+    setTransactions(transactions);
+  }, [transactions]);
+
+  useEffect(() => {
+    console.log('Before gotoPage call, pageIndex:', pageIndex);
+    gotoPage(pageIndex);
+    console.log('After gotoPage call, pageIndex:', pageIndex);
+  }, [pageIndex, gotoPage, transactions]);
 
   return (
     <div className="App">
@@ -114,9 +105,7 @@ function App() {
           <>
             <p>Connected Account: {account}</p>
             <div>
-              {loading ? (
-                <p>Loading...</p>
-              ) : transactions.length > 0 ? (
+              {transactions.length > 0 ? (
                 <>
                   <table {...getTableProps()}>
                     <thead>
