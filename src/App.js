@@ -84,18 +84,21 @@ function App() {
 
   useEffect(() => {
     setPageCount(Math.ceil(transactions.length / pageSize));
-  }, [transactions, pageSize]);
+    console.log('Page count:', pageCount);
+  }, [transactions, pageSize, pageCount]);
 
   useEffect(() => {
     // Bypass the fetching logic and use hardcoded transactions
     setTransactions(transactions);
+    console.log('Transactions state:', transactions);
   }, [transactions]);
 
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
     gotoPage(pageIndex);
     console.log('After gotoPage call, pageIndex:', pageIndex);
-  }, [pageIndex, gotoPage, transactions]);
+    console.log('Page index:', pageIndex, 'Page size:', pageSize);
+  }, [pageIndex, gotoPage, transactions, pageSize]);
 
   return (
     <div className="App">
