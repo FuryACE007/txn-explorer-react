@@ -55,10 +55,7 @@ function App() {
     []
   );
 
-  const data = React.useMemo(() => transactions, [transactions]);
-
   const pageSize = 8;
-  const pageCount = Math.ceil(transactions.length / pageSize);
 
   const {
     getTableProps,
@@ -75,13 +72,19 @@ function App() {
   } = useTable(
     {
       columns,
-      data,
+      data: [],
       initialState: { pageIndex: 0 },
       manualPagination: true,
-      pageCount: pageCount,
+      pageCount: Math.ceil(transactions.length / pageSize),
     },
     usePagination
   );
+
+  const data = React.useMemo(() => {
+    const indexOfLastTxn = (pageIndex + 1) * pageSize;
+    const indexOfFirstTxn = indexOfLastTxn - pageSize;
+    return transactions.slice(indexOfFirstTxn, indexOfLastTxn);
+  }, [pageIndex, transactions, pageSize]);
 
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
@@ -94,6 +97,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Ethereum Wallet Transaction Explorer</h1>
+        <button onClick={connectWalletHandler}>Connect to MetaMask</button>
         {account ? (
           <>
             <p>Connected Account: {account}</p>
@@ -154,7 +158,7 @@ function App() {
             </div>
           </>
         ) : (
-          <button onClick={connectWalletHandler}>Connect to MetaMask</button>
+          <></>
         )}
       </header>
     </div>
