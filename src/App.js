@@ -5,17 +5,18 @@ import { formatEther } from 'ethers';
 
 function App() {
   const [account, setAccount] = useState('0xMockAccount');
-  const [transactions] = useState([
-    { hash: '0xMockTransactionHash1', from: '0xMockFromAddress1', to: '0xMockToAddress1', value: '1000000000000000000', timeStamp: '1601510400' },
-    { hash: '0xMockTransactionHash2', from: '0xMockFromAddress2', to: '0xMockToAddress2', value: '2000000000000000000', timeStamp: '1601596800' },
-    // ... more mock transactions
-  ]);
+  const [transactions, setTransactions] = useState([]);
 
   const connectWalletHandler = async () => {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setAccount(accounts[0]);
+        const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${accounts[0]}&startblock=0&endblock=99999999&sort=asc&apikey=${process.env.REACT_APP_ETHERSCAN_API_KEY}`);
+        const data = await response.json();
+        if (data.status && data.result) {
+          setTransactions(data.result);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -72,7 +73,7 @@ function App() {
   } = useTable(
     {
       columns,
-      data: [],
+      data,
       initialState: { pageIndex: 0 },
       manualPagination: true,
       pageCount: Math.ceil(transactions.length / pageSize),
@@ -80,18 +81,18 @@ function App() {
     usePagination
   );
 
-  const data = React.useMemo(() => {
-    const indexOfLastTxn = (pageIndex + 1) * pageSize;
-    const indexOfFirstTxn = indexOfLastTxn - pageSize;
-    return transactions.slice(indexOfFirstTxn, indexOfLastTxn);
-  }, [pageIndex, transactions, pageSize]);
-
   useEffect(() => {
     console.log('Before gotoPage call, pageIndex:', pageIndex);
     gotoPage(pageIndex);
     console.log('After gotoPage call, pageIndex:', pageIndex);
     console.log('Page index:', pageIndex, 'Page size:', pageSize);
   }, [pageIndex, gotoPage, transactions, pageSize]);
+
+  const data = React.useMemo(() => {
+    const indexOfLastTxn = (pageIndex + 1) * pageSize;
+    const indexOfFirstTxn = indexOfLastTxn - pageSize;
+    return transactions.slice(indexOfFirstTxn, indexOfLastTxn);
+  }, [pageIndex, transactions, pageSize]);
 
   return (
     <div className="App">
