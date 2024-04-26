@@ -4,7 +4,7 @@ import { useTable, usePagination } from 'react-table';
 import './App.css';
 
 function App() {
-  const [walletAddress, setWalletAddress] = useState('0x31B98D14007bDEe637298086988A0bBd31184523');
+  const [walletAddress, setWalletAddress] = useState('0x0000000000000000000000000000000000000000');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,7 +36,12 @@ function App() {
     try {
       const response = await axios.get(sepoliaApiUrl);
       console.log(`API Response:`, response.data);
-      if (response.data.status === "1" && response.data.result.length > 0) {
+      // Re-check if the walletAddress is the null address after fetching the data
+      if (walletAddress === '0x0000000000000000000000000000000000000000') {
+        console.log('Null address detected after fetching, no transactions to display.');
+        setTransactions([]);
+        setTotalPages(0);
+      } else if (response.data.status === "1" && response.data.result.length > 0) {
         setTransactions(response.data.result);
         // Calculate the total number of pages
         const totalTransactions = response.data.result.length;
@@ -54,7 +59,7 @@ function App() {
       setTotalPages(0); // Set page count to 0 in case of error
     }
     setLoading(false);
-  }, [walletAddress, pageSize]); // Add pageSize to the dependency array
+  }, [walletAddress, pageSize]);
 
   useEffect(() => {
     console.log('useEffect triggered for walletAddress:', walletAddress); // Log when useEffect is triggered
@@ -114,7 +119,7 @@ function App() {
   );
 
   return (
-    <div className="App">
+    <div className="App" key={walletAddress}>
       <header className="App-header">
         <button onClick={connectWalletHandler}>Connect Wallet</button>
         {walletAddress && (
@@ -122,7 +127,7 @@ function App() {
         )}
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : transactions.length > 0 ? (
           <>
             <table {...getTableProps()}>
               <thead>
@@ -195,6 +200,8 @@ function App() {
             {console.log(`Transactions state before rendering:`, transactions)}
             {console.log(`Total pages state before rendering:`, totalPages)}
           </>
+        ) : (
+          <p>No transactions found for this wallet address.</p>
         )}
       </header>
     </div>
