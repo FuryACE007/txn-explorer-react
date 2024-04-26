@@ -4,7 +4,7 @@ import { useTable, usePagination } from 'react-table';
 import './App.css';
 
 function App() {
-  const [walletAddress, setWalletAddress] = useState('0x0000000000000000000000000000000000000000');
+  const [walletAddress, setWalletAddress] = useState('0x31B98D14007bDEe637298086988A0bBd31184523');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
