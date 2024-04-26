@@ -35,12 +35,14 @@ function App() {
 
     try {
       const response = await axios.get(sepoliaApiUrl);
+      console.log(`API Response:`, response.data);
       if (response.data.status === "1" && response.data.result.length > 0) {
         setTransactions(response.data.result);
         // Calculate the total number of pages
         const totalTransactions = response.data.result.length;
         const totalPages = Math.ceil(totalTransactions / pageSize);
         setTotalPages(totalPages); // Set the total page count state
+        console.log(`Total pages set to: ${totalPages}`);
       } else {
         setTransactions([]); // Ensure transactions are cleared if no data is found
         setTotalPages(0); // Set page count to 0 if no transactions
@@ -189,6 +191,9 @@ function App() {
                 ))}
               </select>
             </div>
+            {console.log(`Rendering pagination with total pages: ${totalPages}`)}
+            {console.log(`Transactions state before rendering:`, transactions)}
+            {console.log(`Total pages state before rendering:`, totalPages)}
           </>
         )}
       </header>
