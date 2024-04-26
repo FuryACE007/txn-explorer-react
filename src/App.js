@@ -4,9 +4,11 @@ import { useTable, usePagination } from 'react-table';
 import './App.css';
 
 function App() {
-  const [walletAddress, setWalletAddress] = useState('0xFe3B557E8Fb62b89F4916B721be55cEb828dBd73');
+  const [walletAddress, setWalletAddress] = useState('0x31B98D14007bDEe637298086988A0bBd31184523');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(8);
 
   const connectWalletHandler = async () => {
     if (window.ethereum) {
@@ -33,17 +35,24 @@ function App() {
 
     try {
       const response = await axios.get(sepoliaApiUrl);
-      if (response.data.status === "1") {
+      if (response.data.status === "1" && response.data.result.length > 0) {
         setTransactions(response.data.result);
-        console.log('Fetched transactions:', response.data.result); // Added console log
+        // Calculate the total number of pages
+        const totalTransactions = response.data.result.length;
+        const totalPages = Math.ceil(totalTransactions / pageSize);
+        setTotalPages(totalPages); // Set the total page count state
       } else {
-        console.error('Error fetching transactions:', response.data.message);
+        setTransactions([]); // Ensure transactions are cleared if no data is found
+        setTotalPages(0); // Set page count to 0 if no transactions
+        console.error('No transactions found for this wallet address:', walletAddress);
       }
     } catch (error) {
       console.error('Error fetching transactions:', error);
+      setTransactions([]); // Clear transactions in case of error
+      setTotalPages(0); // Set page count to 0 in case of error
     }
     setLoading(false);
-  }, [walletAddress]); // walletAddress is a dependency for fetchTransactions
+  }, [walletAddress, pageSize]); // Add pageSize to the dependency array
 
   useEffect(() => {
     console.log('useEffect triggered for walletAddress:', walletAddress); // Log when useEffect is triggered
@@ -89,13 +98,10 @@ function App() {
     page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
-    pageCount,
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex },
   } = useTable(
     {
       columns,
@@ -149,13 +155,13 @@ function App() {
               <button onClick={() => nextPage()} disabled={!canNextPage}>
                 {'>'}
               </button>{' '}
-              <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+              <button onClick={() => gotoPage(totalPages - 1)} disabled={!canNextPage}>
                 {'>>'}
               </button>{' '}
               <span>
                 Page{' '}
                 <strong>
-                  {pageIndex + 1} of {pageOptions.length}
+                  {pageIndex + 1} of {totalPages}
                 </strong>{' '}
               </span>
               <span>

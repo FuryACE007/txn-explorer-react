@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #141414; /* Netflix background color */
+  color: #e5e5e5; /* Netflix standard font color */
 }
 
 .App-logo {
@@ -14,18 +16,73 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #141414; /* Updated to Netflix background color */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: #e5e5e5; /* Updated to Netflix standard font color */
 }
 
 .App-link {
-  color: #61dafb;
+  color: #e50914; /* Netflix accent color */
+}
+
+/* Table styles */
+table {
+  border-collapse: collapse;
+  width: 80%;
+  margin: 20px auto;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #e50914; /* Netflix accent color for table borders */
+}
+
+th {
+  background-color: #221f1f; /* Netflix dark shade for table header */
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background-color: #221f1f; /* Netflix dark shade for alternate rows */
+}
+
+tr:hover {
+  background-color: #e50914; /* Netflix accent color for hover */
+  color: #fff;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.page-item {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.page-item.active {
+  color: #e50914; /* Netflix accent color for active page */
+}
+
+.page-link {
+  background-color: #141414; /* Netflix background color */
+  border: 1px solid #e50914; /* Netflix accent color for borders */
+  color: #e5e5e5; /* Netflix standard font color */
+  padding: 8px 16px;
+}
+
+.page-link:hover {
+  background-color: #e50914; /* Netflix accent color for hover */
+  color: #fff;
 }
 
 @keyframes App-logo-spin {
